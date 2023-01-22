@@ -1,0 +1,10 @@
+{
+  "name": "wwivconfigtv",
+  "version-string": "0.0.0",
+  "dependencies": [
+    "tvision",
+    "fmt",
+    "nlohmann-json",
+    "cpp-httplib"
+  ]
+}

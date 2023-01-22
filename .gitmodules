@@ -1,0 +1,6 @@
+[submodule "deps/tvwcommon"]
+	path = deps/tvwcommon
+	url = git@github.com:wwiv/tvwcommon.git
+[submodule "vcpkg"]
+	path = vcpkg
+	url = https://github.com/Microsoft/vcpkg.git
