@@ -18,6 +18,8 @@ find_package(nlohmann_json CONFIG REQUIRED)
 add_subdirectory(deps/tvwcommon)
 add_executable(${PROJECT_NAME} 
   "src/main.cpp" 
+  "src/menu.cpp" 
+  "src/app.cpp"
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 
