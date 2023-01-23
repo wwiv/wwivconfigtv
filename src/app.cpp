@@ -87,7 +87,80 @@ ConfigApp::ConfigApp(int argc, char **argv)
 ConfigApp::~ConfigApp() { 
 }
 
+/* ---------------------------------------------------------------------- */
+/*      class TProgram                                                    */
+/*                                                                        */
+/*      Palette layout                                                    */
+/*          1 = TBackground                                               */
+/*       2- 7 = TMenuView and TStatusLine                                 */
+/*       8-15 = TWindow(Blue)                                             */
+/*      16-23 = TWindow(Cyan)                                             */
+/*      24-31 = TWindow(Gray)                                             */
+/*      32-63 = TDialog                                                   */
+/* ---------------------------------------------------------------------- */
 
+/* ---------------------------------------------------------------------- */
+/*      class TMenuView                                                   */
+/*                                                                        */
+/*      Palette layout                                                    */
+/*        1 = Normal text                                                 */
+/*        2 = Disabled text                                               */
+/*        3 = Shortcut text                                               */
+/*        4 = Normal selection                                            */
+/*        5 = Disabled selection                                          */
+/*        6 = Shortcut selection                                          */
+/* ---------------------------------------------------------------------- */
+
+/* ---------------------------------------------------------------------- */
+/*      class TWindow                                                     */
+/*                                                                        */
+/*      Palette layout                                                    */
+/*        1 = Frame passive                                               */
+/*        2 = Frame active                                                */
+/*        3 = Frame icon                                                  */
+/*        4 = ScrollBar page area                                         */
+/*        5 = ScrollBar controls                                          */
+/*        6 = Scroller normal text                                        */
+/*        7 = Scroller selected text                                      */
+/*        8 = Reserved                                                    */
+/* ---------------------------------------------------------------------- */
+
+#define cpWWIVAppColor \
+       "\x03\x13\x18\x1E\x30\x38\x3E\x17\x1F\x1A\x08\x08\x0E\x01\x1F" \
+    "\x37\x3F\x3A\x13\x13\x3E\x21\x3F\x70\x7F\x7A\x13\x13\x70\x7F\x7E" \
+    "\x08\x09\x0A\x08\x0B\x03\x03\x0E\x0E\x20\x2B\x2F\x78\x2E\x08\x03" \
+    "\x3F\x3E\x1F\x2F\x1A\x20\x72\x31\x31\x30\x2F\x3E\x31\x13\x38\x00" \
+    "\x17\x1F\x1A\x71\x71\x1E\x17\x1F\x1E\x20\x2B\x2F\x78\x2E\x10\x30" \
+    "\x3F\x3E\x70\x2F\x7A\x20\x12\x31\x31\x30\x2F\x3E\x31\x13\x38\x00" \
+    "\x37\x3F\x3A\x13\x13\x3E\x30\x3F\x3E\x20\x2B\x2F\x78\x2E\x30\x70" \
+    "\x7F\x7E\x1F\x2F\x1A\x20\x32\x31\x71\x70\x2F\x7E\x71\x13\x78\x00" \
+    "\x37\x3F\x3A\x13\x13\x30\x3E\x1E"    // help colors
+
+#define cpAppColor \
+       "\x71\x70\x78\x74\x20\x28\x24\x17\x1F\x1A\x31\x31\x1E\x71\x1F" \
+    "\x37\x3F\x3A\x13\x13\x3E\x21\x3F\x70\x7F\x7A\x13\x13\x70\x7F\x7E" \
+    "\x70\x7F\x7A\x13\x13\x70\x70\x7F\x7E\x20\x2B\x2F\x78\x2E\x70\x30" \
+    "\x3F\x3E\x1F\x2F\x1A\x20\x72\x31\x31\x30\x2F\x3E\x31\x13\x38\x00" \
+    "\x17\x1F\x1A\x71\x71\x1E\x17\x1F\x1E\x20\x2B\x2F\x78\x2E\x10\x30" \
+    "\x3F\x3E\x70\x2F\x7A\x20\x12\x31\x31\x30\x2F\x3E\x31\x13\x38\x00" \
+    "\x37\x3F\x3A\x13\x13\x3E\x30\x3F\x3E\x20\x2B\x2F\x78\x2E\x30\x70" \
+    "\x7F\x7E\x1F\x2F\x1A\x20\x32\x31\x71\x70\x2F\x7E\x71\x13\x78\x00" \
+    "\x37\x3F\x3A\x13\x13\x30\x3E\x1E"    // help colors
+
+
+TPalette& ConfigApp::getPalette() const
+{
+  static TPalette color(cpWWIVAppColor, sizeof(cpAppColor) - 1);
+  static TPalette blackwhite(cpAppBlackWhite, sizeof(cpAppBlackWhite) - 1);
+  static TPalette monochrome(cpAppMonochrome, sizeof(cpAppMonochrome) - 1);
+  static TPalette* palettes[] =
+  {
+  &color,
+  &blackwhite,
+  &monochrome
+  };
+  return *(palettes[appPalette]);
+}
 void ConfigApp::changeDir() { executeDialog(new TChDirDialog(cdNormal, 0), 0); }
 
 void ConfigApp::handleEvent(TEvent &event) {
@@ -108,10 +181,11 @@ void ConfigApp::showGeneralSettings() {
   TFormColumn c(8, 30, TFormColumn::LabelPosition::left);
   c.add("System name:", new TFormInputLine(&sysname, 60));
   c.add("Sysop name:", new TFormInputLine(&sysopname, 60));
-  c.add("System phone:", new TFormInputLine(&sysphone, 12));
+  c.add("System phone:", new TFormInputLine(&sysphone, 13));
   c.add("System pw:", new TFormInputLine(&systempw, 60));
   TForm form(&c);
   form.addOKButton();
+  c.set_ypad(0);
   if (auto o = form.createDialog("Settings")) {
     o.value()->options |= ofCentered;
     if (executeDialog(o.value()) == cmOK) {
@@ -168,7 +242,7 @@ bool ConfigApp::valid(ushort cmd) {
 void ConfigApp::ShowAboutBox() {
   TDialog *aboutBox = new TDialog(TRect(0, 0, 59, 11), "About");
   aboutBox->insert(new TStaticText(TRect(9, 2, 50, 7),
-                                   "\003WWIVconfig\n\n"
+                                   "\003~WWIVconfig~\n\n"
                                    "\003Copyright (c) 2023\n\n"
                                    "\003WWIV Software Services"));
 

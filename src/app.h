@@ -35,6 +35,8 @@ public:
   ConfigApp(int argc, char** argv);
   ~ConfigApp();
 
+  virtual TPalette& getPalette() const;
+
   virtual void handleEvent(TEvent& event) override;
   void showGeneralSettings();
   void handleCommand(TEvent& event);
