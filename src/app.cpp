@@ -176,13 +176,27 @@ void ConfigApp::handleEvent(TEvent &event) {
 }
 
 void ConfigApp::showGeneralSettings() {
-  std::string sysname, sysphone, sysopname, systempw;
+  std::string sysname, sysphone, sysopname, systempw, xx;
   int port;
-  TFormColumn c(8, 30, TFormColumn::LabelPosition::left);
+  TFormColumn c(20, 30, TFormColumn::LabelPosition::left);
   c.add("System name:", new TFormInputLine(&sysname, 60));
   c.add("Sysop name:", new TFormInputLine(&sysopname, 60));
   c.add("System phone:", new TFormInputLine(&sysphone, 13));
   c.add("System pw:", new TFormInputLine(&systempw, 60));
+  c.add("System XX:", new TFormInputLine(&xx, 10));
+  c.add("System XX:", new TFormInputLine(&xx, 10));
+  c.add("System XX:", new TFormInputLine(&xx, 10));
+  c.add("System XX:", new TFormInputLine(&xx, 10));
+  c.add("System XX:", new TFormInputLine(&xx, 10));
+  c.add("System XX:", new TFormInputLine(&xx, 10));
+  c.add("System XX:", new TFormInputLine(&xx, 10));
+
+  TFormColumn sc(30, 7, 2, 5, 10, TFormColumn::LabelPosition::left);
+  sc.add("X1:", new TFormInputLine(&xx, 5));
+  sc.add("X2:", new TFormInputLine(&xx, 5));
+  sc.set_ypad(0);
+  c.add(&sc);
+
   TForm form(&c);
   form.addOKButton();
   c.set_ypad(0);
